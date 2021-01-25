@@ -1,5 +1,8 @@
-﻿using System;
+﻿using IvoUppgift3.Enemies;
+using IvoUppgift3.Enemies.Monsters;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace IvoUppgift3.Utilities
@@ -10,6 +13,7 @@ namespace IvoUppgift3.Utilities
         private bool keepPlaying = true;
         Random random = new Random();
         Player player = new Player();
+        List<Monster> listOfMonsters = new List<Monster>();
 
         public void Startgame()
         {
@@ -19,9 +23,15 @@ namespace IvoUppgift3.Utilities
                 ProgramLayout();
                 Welcome();
                 InitializePlayer();
+                InitializeMonsters();
 
 
-                //InitializeMonsters();
+                Console.WriteLine(listOfMonsters[0].monsterLevel(player.Level));
+                Console.WriteLine();
+                ClearScreen();
+            
+                
+
                 //ShowGameMenu(player); //Calls method to show the main menu
                 //GameActions(Menu.PlayerMenuChoice(player), player); //calls method that takes user menu choice. Sends the info to method PlayerMenuChoice in the class Menu.
             }
@@ -36,6 +46,38 @@ namespace IvoUppgift3.Utilities
             Console.Clear();
 
         }
+
+         void InitializeMonsters()
+        {
+
+            NiceOldLady niceOldLady = new NiceOldLady();
+            Greta greta = new Greta();
+            List<Monster> listToShuffle = new List<Monster>() { greta, niceOldLady };
+
+            Console.WriteLine("List to shuffle");
+            foreach (Monster item in listToShuffle)
+            {
+                Console.WriteLine(item);
+            }
+
+            Console.WriteLine("List after shuffle");
+            int i = listToShuffle.Count;
+            while (i > 0)
+            {
+                i--;
+                int listIndex = random.Next(i + 1);
+                listOfMonsters.Add(listToShuffle[listIndex]);
+                listToShuffle.RemoveAt(listIndex);
+
+            }
+
+            foreach (Monster item in listOfMonsters)
+            {
+                Console.WriteLine(item);
+            }
+
+        }
+
 
 
 
