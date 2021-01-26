@@ -14,19 +14,17 @@ namespace IvoUppgift3.Utilities
         Random random = new Random();
         Player player = new Player();
         List<Monster> listOfMonsters = new List<Monster>();
+        private bool lostGame, wonGame;
 
         public void Startgame()
         {
+            ProgramLayout();
+            Welcome();
+            InitializePlayer();
+            InitializeMonsters();
 
             while (keepPlaying)
             {
-                ProgramLayout();
-                Welcome();
-                InitializePlayer();
-                InitializeMonsters();
-
-                //Console.WriteLine(listOfMonsters[0].monsterLevel(player.Level));          
-
                 ShowGameMenu(); //Calls method to show the main menu
                 GameActions(Menu.PlayerMenuChoice(player)); //calls method that takes user menu choice. Sends the info to method PlayerMenuChoice in the class Menu.
             }
@@ -42,7 +40,7 @@ namespace IvoUppgift3.Utilities
 
         }
 
-         void InitializeMonsters()
+        void InitializeMonsters()
         {
 
             NiceOldLady niceOldLady = new NiceOldLady();
@@ -118,28 +116,29 @@ namespace IvoUppgift3.Utilities
 
         private void Battle()
         {
-
-            int monsterHp = listOfMonsters[player.Level - 1].HealthPoints(player.Level);
+            var battleMonster = listOfMonsters[player.Level - 1];
+            int monsterHp = battleMonster.HealthPoints(player.Level);
             Console.WriteLine("Finally you see some punk that needs asskicking!");
-            Console.WriteLine($"{listOfMonsters[player.Level-1]}({monsterHp} healthpoints) walks straight at you. You just cant take it and you pick a fight.");
+            Console.WriteLine($"{battleMonster}({monsterHp} healthpoints) walks straight at you. You just cant take it and you pick a fight.");
             Console.WriteLine($"You are {player}, the baddest mofo on the planet! \n");
             ClearScreen();
 
 
-
-            
-            while (!monster.isDead())
+            while (!battleMonster.isDead() && !player.isDead())
             {
 
-                Console.WriteLine("You hit the " + monster.getName() + " for " + p1.attack(monster) + " dmg");
-                Console.WriteLine("Monsters hp is now: " + monster.getHp());
-                if (monster.isDead())
+                Console.WriteLine($"{player.UseUniqueMoves()} {battleMonster} for {player.attack(battleMonster)} damage");
+                Console.WriteLine($"{battleMonster}s hp is now: {battleMonster.getHp()}\n");
+                Console.WriteLine("-------------------------------------------------------------------------------------------\n");
+                if (battleMonster.isDead())
                 {
-                    Console.WriteLine("The monster is dead and you gained " + monster.getExp() + " xp ");
+                    player.Level++;
+                    Console.WriteLine($"BOOOOOOOM. That irritating hideous {battleMonster} is dead.\n");
+                    Console.WriteLine($"You stand tall and proud after your performace. You take a steroid shot and gain a whole new level of awesome! (level {player.Level})\n");
+                    ClearScreen();
 
-
-                    monster.isDead();
-                    if (player.level == 10)
+                    //battleMonster.isDead();
+                    if (player.Level == 10)
                     {
                         Console.WriteLine("Gz you won the game bruh!");
                         wonGame = true;
@@ -147,17 +146,20 @@ namespace IvoUppgift3.Utilities
                     return;
                 }
                 Console.ReadKey();
-                int monsterdmg = monster.attack();
-                Console.WriteLine("The monster hit you for " + monsterdmg);
-                Console.WriteLine("The monster hit you for " + monsterdmg);
-                p1.takeDamage(monsterdmg);
-                Console.WriteLine("Your current hp is: " + p1.Hp);
-
-                Console.ReadKey();
+                int monsterdmg = battleMonster.attack(player.Level);
+                Console.WriteLine($"{battleMonster} {battleMonster.UseUniqueMoves()}. You endure {monsterdmg} damage");
+                player.takeDamage(monsterdmg);
+                Console.WriteLine($"Your current hp is: {player.Hp}\n");
+                Console.WriteLine("-------------------------------------------------------------------------------------------\n");
+                if (player.isDead())
+                {
+                    Console.WriteLine("Bummer you died bro");
+                }
+                
+                ClearScreen();
 
             }
-        
-            
+
 
         }
 
@@ -188,7 +190,7 @@ namespace IvoUppgift3.Utilities
 
         private void ClearScreen()
         {
-            Console.WriteLine("Tryck valfritt tangent för att fortsätta.");
+            Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
             Console.Clear();
 
@@ -197,7 +199,7 @@ namespace IvoUppgift3.Utilities
 
         public void ExitGame()
         {
-            Console.WriteLine("Thanks for playing. See ya!");
+            Console.WriteLine("Go die in a fire for quitting the game!");
 
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IvoUppgift3.Enemies;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,12 +10,18 @@ namespace IvoUppgift3
 
         private string name;
         private int level = 1;
-        private int gold;
-        private int xp;
-        private int xpToNextLevel = 150;
-        private int hp = 200;
+        private bool dead;
+        private int hp = 100;
         private int atkDmg = 10;
-        private bool isdead = true;
+        private int dmgDone;
+
+        Random random = new Random();
+        List<string> listOfUniqueMoves = new List<string>()
+        { "You bitchslap",
+            "You headbutt",
+            "You use your knife to cut",
+            "You elbow the crap out of" };
+
 
         public Player()
         {
@@ -27,27 +34,51 @@ namespace IvoUppgift3
             this.level = level;
         }
 
-        /*
-        public int attack(IMonster monster)
+        
+        public int attack(Monster monster)
         {
-            monster.takeDamage(AtkDmg);
-            return AtkDmg;
+            if (random.Next(atkDmg) == 1 || random.Next(atkDmg) == 2)
+            {
+                dmgDone = random.Next(30,33) * level;
+            }
+            else
+            {
+                dmgDone = random.Next(AtkDmg * Level);
+            }
+            monster.takeDamage(dmgDone);
+            return dmgDone;
         }
-        */
+        
 
         public string Name { get => name; set => name = value; }
 
         public int Level { get => level; set => level = value; }
-        public int Gold { get => gold; set => gold = value; }
-        public int Xp { get => xp; set => xp = value; }
-        public int XpToNextLevel { get => xpToNextLevel; set => xpToNextLevel = value; }
+
         public int Hp { get => hp; set => hp = value; }
         public int AtkDmg { get => atkDmg; set => atkDmg = value; }
-        public bool Isdead { get => isdead; set => isdead = value; }
 
         public void takeDamage(int monsterdmg)
         {
             hp -= monsterdmg;
+        }
+
+        public string UseUniqueMoves()
+        {
+            return listOfUniqueMoves[random.Next(3)];
+        }
+
+        public virtual bool isDead()
+        {
+            if (this.hp <= 0)
+            {
+                this.dead = true;
+            }
+            else
+            {
+                this.dead = false;
+            }
+
+            return this.dead;
         }
 
         public override string ToString()

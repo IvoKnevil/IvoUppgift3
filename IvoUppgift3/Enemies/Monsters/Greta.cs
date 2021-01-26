@@ -6,7 +6,7 @@ namespace IvoUppgift3.Enemies.Monsters
 {
     class Greta : Monster
     {
-
+        Random random = new Random();
         List<string> listOfUniqueMoves = new List<string>()
         { "tries to hit you with info about polar ice melting",
             "tries to move you by saying how many species have gone extinct",
@@ -16,16 +16,16 @@ namespace IvoUppgift3.Enemies.Monsters
  
         public string Name { get { return "Greta"; } }
 
-        public override int monsterLevel(int playerLevel)
-        {
-            this.Level = playerLevel;
-            return this.Level;
-        }
 
+        public override string UseUniqueMoves()
+        {
+            return listOfUniqueMoves[random.Next(3)];
+        }
         public override string ToString()
         {
             return Name;
         }
+
 
     }
 }
