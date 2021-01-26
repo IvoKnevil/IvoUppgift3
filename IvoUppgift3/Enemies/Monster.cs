@@ -11,6 +11,7 @@ namespace IvoUppgift3.Enemies
         private string Name;
         private int level;
 
+
         public virtual bool isDead()
         {
             if (this.hp <= 0)
@@ -32,6 +33,15 @@ namespace IvoUppgift3.Enemies
             return this.level;
         }
 
+
+        
+        public virtual int HealthPoints(int playerLevel)
+        {
+
+            this.hp = 1000 * playerLevel;
+            return hp;
+        }
+        
 
     }
 }
