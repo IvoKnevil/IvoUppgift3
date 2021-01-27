@@ -14,39 +14,72 @@ namespace IvoUppgift3.Utilities
         Random random = new Random();
         Player player = new Player();
         List<Monster> listOfMonsters = new List<Monster>();
+        List<Monster> listOfKilledMonsters = new List<Monster>();
         private bool lostGame, wonGame;
 
         public void Startgame()
         {
+            //start game by creating the layout
+            //and initializing player and monsters
             ProgramLayout();
             Welcome();
             InitializePlayer();
             InitializeMonsters();
 
-            while (keepPlaying)
+            while (keepPlaying && !lostGame && !wonGame)
             {
-                ShowGameMenu(); //Calls method to show the main menu
+                ShowGameMenu(); 
                 GameActions(Menu.PlayerMenuChoice(player)); //calls method that takes user menu choice. Sends the info to method PlayerMenuChoice in the class Menu.
             }
 
         }
 
 
-        void InitializePlayer()
+        private void InitializePlayer()  //initializes a player
         {
-            Console.Write("Please enter your name: ");
-            player = new Player(Console.ReadLine(), 1);
+            Console.Write("Yo mofo enter your badass name: ");
+            player = new Player(Console.ReadLine(), 1, 100);
+            player.Hp = 100;
+
+            if (player.Name == "Robin")
+            {
+                GodMode();
+            }
+
             Console.Clear();
 
         }
 
-        void InitializeMonsters()
+        private void GodMode()
+        {
+            player.Hp = 200;
+            player.HpCoef = 200;
+            Console.Clear();
+            Console.WriteLine("\n      **************************************************************");
+            Console.WriteLine("      *   W O A H   H O M I E   G O D M O D E   A C T I V A T E D  *");
+            Console.WriteLine("      *                                                            *");
+            Console.WriteLine("      *              G O   K I C K   A S S                         *");
+            Console.WriteLine("      **************************************************************\n");
+            ClearScreen();
+        }
+
+        private void InitializeMonsters() //initializes monsters and adds them to a list
         {
 
             NiceOldLady niceOldLady = new NiceOldLady();
             Greta greta = new Greta();
-            List<Monster> listToShuffle = new List<Monster>() { greta, niceOldLady };
+            Ghandi ghandi = new Ghandi();
+            MLK mLK = new MLK();
+            ObiWan obiWan = new ObiWan();
+            Superman superman = new Superman();
+            Frodo frodo = new Frodo();
+            Batman batman = new Batman();
+            McFly mcFly = new McFly();
+            HarryPotter harryPotter = new HarryPotter();
 
+            List<Monster> listToShuffle = new List<Monster>() { greta, niceOldLady, ghandi, mLK, obiWan, superman, frodo, batman, mcFly, harryPotter };
+
+            //randomizes monsters to a new list so that the player doesnt always meet them in the same order
             int i = listToShuffle.Count;
             while (i > 0)
             {
@@ -78,6 +111,7 @@ namespace IvoUppgift3.Utilities
                     GoAdventure();
                     break;
 
+                //the player choses to look at character details.
                 case 2:
                     ShowCharacterDetalis();
                     ClearScreen();
@@ -95,11 +129,11 @@ namespace IvoUppgift3.Utilities
 
         }
 
-        private void GoAdventure()
-        {
+        private void GoAdventure()  
+        {     
             int randomAdventure = random.Next(1, 10);
 
-            if (randomAdventure == 1)
+            if (randomAdventure == 1) //10% chance of nothing happening
             {
                 Console.WriteLine("What a boring day. You just waste time going round trying to find some people to beat up, \n" +
                     "but nothing exciting comes your way. You just rob some random kids for fun.");
@@ -107,7 +141,7 @@ namespace IvoUppgift3.Utilities
             }
             else
             {
-                Battle();
+                Battle(); // 90% chance player meets monster                     
             }
 
         }
@@ -116,58 +150,80 @@ namespace IvoUppgift3.Utilities
 
         private void Battle()
         {
-            var battleMonster = listOfMonsters[player.Level - 1];
-            int monsterHp = battleMonster.HealthPoints(player.Level);
-            Console.WriteLine("Finally you see some punk that needs asskicking!");
-            Console.WriteLine($"{battleMonster}({monsterHp} healthpoints) walks straight at you. You just cant take it and you pick a fight.");
-            Console.WriteLine($"You are {player}, the baddest mofo on the planet! \n");
-            ClearScreen();
+            var battleMonster = listOfMonsters[player.Level - 1];    //variable battlemonster to single out the monster to fight and keep code cleaner
+            int monsterHp = battleMonster.HealthPoints(player.Level); //variable monsterHo to single out the health points of the monster to fight and keep code cleaner
 
+            BattleIntro(battleMonster, monsterHp); 
 
-            while (!battleMonster.isDead() && !player.isDead())
+            while (!battleMonster.IsDead() && !player.IsDead())
             {
-
-                Console.WriteLine($"{player.UseUniqueMoves()} {battleMonster} for {player.attack(battleMonster)} damage");
-                Console.WriteLine($"{battleMonster}s hp is now: {battleMonster.getHp()}\n");
+                //throws some attacks for random damage
+                Console.WriteLine($"{player.UseUniqueMoves()} {battleMonster} for {player.Attack(battleMonster)} damage");
+                Console.WriteLine($"{battleMonster}s hp is now: {battleMonster.GetHp()}\n");
                 Console.WriteLine("-------------------------------------------------------------------------------------------\n");
-                if (battleMonster.isDead())
+
+                if (battleMonster.IsDead())
                 {
                     player.Level++;
+                    player.HealthPoints(player.Level);
+                    listOfKilledMonsters.Add(battleMonster);
                     Console.WriteLine($"BOOOOOOOM. That irritating hideous {battleMonster} is dead.\n");
-                    Console.WriteLine($"You stand tall and proud after your performace. You take a steroid shot and gain a whole new level of awesome! (level {player.Level})\n");
+                    Console.WriteLine($"You stand tall and proud after your performace. \nYou take a steroid shot and gain a whole new level of awesome! (level {player.Level})\n");
                     ClearScreen();
+                    battleMonster.IsDead();
 
-                    //battleMonster.isDead();
                     if (player.Level == 10)
                     {
-                        Console.WriteLine("Gz you won the game bruh!");
                         wonGame = true;
                     }
                     return;
                 }
+
                 Console.ReadKey();
-                int monsterdmg = battleMonster.attack(player.Level);
+
+                //receives random attacks
+                int monsterdmg = battleMonster.Attack(player.Level);
                 Console.WriteLine($"{battleMonster} {battleMonster.UseUniqueMoves()}. You endure {monsterdmg} damage");
-                player.takeDamage(monsterdmg);
-                Console.WriteLine($"Your current hp is: {player.Hp}\n");
+                player.TakeDamage(monsterdmg);
+                Console.WriteLine($"Your current hp is: {player.GetHp()}\n");
                 Console.WriteLine("-------------------------------------------------------------------------------------------\n");
-                if (player.isDead())
+
+                if (player.IsDead())
                 {
-                    Console.WriteLine("Bummer you died bro");
+                    lostGame = true;
                 }
-                
+
                 ClearScreen();
 
             }
 
-
         }
 
-
+        private void BattleIntro(Monster battleMonster, int monsterHp)
+        {
+            Console.WriteLine("Finally you see some punk that needs asskicking!");
+            Console.WriteLine($"{battleMonster}({monsterHp} healthpoints) walks straight at you. You just cant take it and you pick a fight.\n");
+            Console.WriteLine($"Afterall, you are {player}, the baddest mofo on the planet! \n");
+            ClearScreen();
+        }
 
         private void ShowCharacterDetalis()
         {
-            // TODO print player
+            Console.WriteLine("___________________________________\n");
+            Console.WriteLine($"Name: {player.Name}");
+            Console.WriteLine($"Level: {player.Level}");
+            Console.WriteLine($"Hp: {player.HealthPoints(player.Level)} points");
+
+            if (player.Level == 1)
+            {
+                Console.WriteLine("Monsters killed: 0");
+            }
+            else
+            {
+                Console.WriteLine("Monsters killed: " + (String.Join(", ", listOfKilledMonsters) + "\n"));
+            }
+            Console.WriteLine("___________________________________\n");
+
         }
 
 
@@ -199,8 +255,26 @@ namespace IvoUppgift3.Utilities
 
         public void ExitGame()
         {
-            Console.WriteLine("Go die in a fire for quitting the game!");
+            if (!keepPlaying)
+            {
+                Console.WriteLine("Go die in a fire for quitting the game!");
+            }
 
+            else if (lostGame)
+            {
+
+                Console.WriteLine("\n      *****************************************");
+                Console.WriteLine("      *      Y O U   A R E   D E A D !!!     *");
+                Console.WriteLine("      *****************************************\n");
+                Console.WriteLine("You are such a f-upped loser!");
+                Console.WriteLine("Get lost!");
+            }
+            else if (wonGame)
+            {
+                Console.WriteLine("Gz you won the game bruh!");
+                Console.WriteLine("Im sure your mum would be proud");
+                Console.WriteLine("Now get lost you stupid c*nt");
+            }
         }
 
 

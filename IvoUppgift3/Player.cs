@@ -9,9 +9,10 @@ namespace IvoUppgift3
     {
 
         private string name;
-        private int level = 1;
+        private int level;
         private bool dead;
-        private int hp = 100;
+        private int hp;
+        private int hpCoef;
         private int atkDmg = 10;
         private int dmgDone;
 
@@ -28,46 +29,64 @@ namespace IvoUppgift3
 
         }
 
-        public Player(string name, int level)
+        public Player(string name, int level, int hpCoef)
         {
             this.name = name;
             this.level = level;
+            this.hpCoef = hpCoef;
         }
-
-        
-        public int attack(Monster monster)
-        {
-            if (random.Next(atkDmg) == 1 || random.Next(atkDmg) == 2)
-            {
-                dmgDone = random.Next(30,33) * level;
-            }
-            else
-            {
-                dmgDone = random.Next(AtkDmg * Level);
-            }
-            monster.takeDamage(dmgDone);
-            return dmgDone;
-        }
-        
 
         public string Name { get => name; set => name = value; }
 
         public int Level { get => level; set => level = value; }
 
         public int Hp { get => hp; set => hp = value; }
+
+        public int HpCoef { get => hpCoef; set => hpCoef = value;  }
+
         public int AtkDmg { get => atkDmg; set => atkDmg = value; }
 
-        public void takeDamage(int monsterdmg)
+        
+        public int Attack(Monster monster)
+        {
+            if (random.Next(atkDmg) == 1 || random.Next(atkDmg) == 2)
+            {
+                dmgDone = random.Next(28,35) * level;
+            }
+            else
+            {
+                dmgDone = random.Next(AtkDmg * Level);
+            }
+            monster.TakeDamage(dmgDone);
+            return dmgDone;
+        }
+        
+
+        public void TakeDamage(int monsterdmg)
         {
             hp -= monsterdmg;
         }
 
-        public string UseUniqueMoves()
+       
+        public int HealthPoints(int playerLevel)
         {
-            return listOfUniqueMoves[random.Next(3)];
+
+            this.hp = HpCoef * playerLevel;
+            return hp;
+        }
+        
+
+        public int GetHp()
+        {
+            return this.hp;
         }
 
-        public virtual bool isDead()
+        public string UseUniqueMoves()
+        {
+            return listOfUniqueMoves[random.Next(listOfUniqueMoves.Count)];
+        }
+
+        public virtual bool IsDead()
         {
             if (this.hp <= 0)
             {

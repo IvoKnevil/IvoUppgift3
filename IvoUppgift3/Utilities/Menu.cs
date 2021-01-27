@@ -10,10 +10,11 @@ namespace IvoUppgift3.Utilities
         private static List<string> gameMenu = new List<string>() { "Go adventuring", "Show detalis about your character", "Exit game" };
         private static int playerChoice;
         private static string userInputDescription;
+        private static string inputText;
         private static object[] menuChoiceToReturn = new object[2];
 
 
-        static public void GameMenu()
+        static public void GameMenu()  //Prints game menu
 
         {
             for (int i = 0; i < gameMenu.Count; i++)
@@ -26,12 +27,23 @@ namespace IvoUppgift3.Utilities
         {
 
             Console.Write($"What would you like to do {player}? ");
-            playerChoice = Convert.ToInt32(Console.ReadLine());
+            inputText = Console.ReadLine();
+
+            if (!string.IsNullOrEmpty(inputText)) //Handles exceptions if player misses to make a choice in game menu
+            {
+                playerChoice = Convert.ToInt32(inputText);
+            }
+            else
+            {
+                ReturnErrorMsg(0);
+            }
+            
+
             Console.Clear();
 
             menuChoiceToReturn[0] = playerChoice;
 
-            if (playerChoice > 0 && playerChoice <= gameMenu.Count) //if-else condition for error handling (user making choices out of menu boundaries.
+            if (playerChoice > 0 && playerChoice <= gameMenu.Count) //if-else condition for error handling (user making choices out of menu range).
             {
                 userInputDescription = gameMenu[playerChoice - 1];
             }
@@ -45,6 +57,9 @@ namespace IvoUppgift3.Utilities
             return menuChoiceToReturn;
 
         }
+
+
+
 
         static public string ReturnErrorMsg(int userInput)
         {

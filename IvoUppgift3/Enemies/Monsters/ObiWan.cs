@@ -4,17 +4,19 @@ using System.Text;
 
 namespace IvoUppgift3.Enemies.Monsters
 {
-    class Greta : Monster
+    class ObiWan : Monster
     {
+
         Random random = new Random();
         List<string> listOfUniqueMoves = new List<string>()
-        { "tries to hit you with info about polar ice melting",
-            "tries to move you by saying how many species have gone extinct",
-            "tries to get you to stop by saying the planet's average surface temperature has risen over one degree",
-            "gives you an angry teenage look" };
+        { "tells you to be mindful of yout thoughts. They betray you",
+            "says \"so uncivilized\"",
+            "tells you that only Sith deals in absolutes",
+            "says \"If you strike me down, I shall become more powerful than you can possibly imagine\"" };
 
- 
-        public string Name { get { return "Greta"; } }
+
+        public string Name { get { return "Obi Wan Kenobi"; } }
+
 
 
         //Method to show different attacks in the battle screen
@@ -28,6 +30,7 @@ namespace IvoUppgift3.Enemies.Monsters
         {
             return Name;
         }
+
 
 
     }

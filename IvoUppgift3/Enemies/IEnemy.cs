@@ -7,14 +7,14 @@ namespace IvoUppgift3.Enemies
     interface IEnemy
     {
 
-        bool isDead();
+        bool IsDead();
 
         int HealthPoints(int playerLevel);
 
-        int attack(int level);
+        int Attack(int level);
 
-        int getHp();
+        int GetHp();
 
-        void takeDamage(int damage);
+        void TakeDamage(int damage);
     }
 }

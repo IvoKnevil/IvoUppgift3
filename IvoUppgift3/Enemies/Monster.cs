@@ -14,7 +14,7 @@ namespace IvoUppgift3.Enemies
 
 
 
-        public virtual bool isDead()
+        public virtual bool IsDead()
         {
             if (this.hp <= 0)
             {
@@ -29,11 +29,11 @@ namespace IvoUppgift3.Enemies
         }
 
 
-        public virtual int attack(int level)
+        public virtual int Attack(int level)
         {
             if (random.Next(atkDmg) == 1 || random.Next(atkDmg) == 2)
             {
-                return random.Next(23, 28) * level;
+                return random.Next(20, 26) * level;
             }
             else
             {
@@ -41,12 +41,12 @@ namespace IvoUppgift3.Enemies
             }
         }
 
-        public virtual int getHp()
+        public virtual int GetHp()
         {
             return this.hp;
         }
 
-        public virtual void takeDamage(int damage)
+        public virtual void TakeDamage(int damage)
         {
             this.hp -= damage;
         }
@@ -58,6 +58,11 @@ namespace IvoUppgift3.Enemies
             this.hp = 100 * playerLevel;
             return hp;
         }
+
+
+        //Method to show different attacks in the battle screen
+        //Method is abstract so each created monster has to create the method
+        //Monster unique attacks saved within the listOfUniqueMoves within each subclass
 
         public abstract string UseUniqueMoves();
         

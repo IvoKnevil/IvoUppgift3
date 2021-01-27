@@ -4,17 +4,19 @@ using System.Text;
 
 namespace IvoUppgift3.Enemies.Monsters
 {
-    class Greta : Monster
+    class McFly : Monster
     {
+
         Random random = new Random();
         List<string> listOfUniqueMoves = new List<string>()
-        { "tries to hit you with info about polar ice melting",
-            "tries to move you by saying how many species have gone extinct",
-            "tries to get you to stop by saying the planet's average surface temperature has risen over one degree",
-            "gives you an angry teenage look" };
+        { "plays guitar so it hurts your ears",
+            "it turns out he has a thing for his mum. It makes you sick",
+            "skates around you so you get dizy",
+            "tries to go back to the future and the car almost runs you over" };
 
- 
-        public string Name { get { return "Greta"; } }
+
+        public string Name { get { return "Marty McFly"; } }
+
 
 
         //Method to show different attacks in the battle screen
@@ -28,7 +30,5 @@ namespace IvoUppgift3.Enemies.Monsters
         {
             return Name;
         }
-
-
     }
 }

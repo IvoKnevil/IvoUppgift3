@@ -4,17 +4,18 @@ using System.Text;
 
 namespace IvoUppgift3.Enemies.Monsters
 {
-    class Greta : Monster
+    class Ghandi : Monster
     {
+
         Random random = new Random();
         List<string> listOfUniqueMoves = new List<string>()
-        { "tries to hit you with info about polar ice melting",
-            "tries to move you by saying how many species have gone extinct",
-            "tries to get you to stop by saying the planet's average surface temperature has risen over one degree",
-            "gives you an angry teenage look" };
+        { "says \"An eye for eye only ends up making the whole world blind\"",
+            "says \"Where there is love there is life\"",
+            "tells you to \"Hate the sin, love the sinner\"",
+            "claims \"Action expresses priorities.\"" };
 
- 
-        public string Name { get { return "Greta"; } }
+
+        public string Name { get { return "Ghandi"; } }
 
 
         //Method to show different attacks in the battle screen
@@ -28,7 +29,6 @@ namespace IvoUppgift3.Enemies.Monsters
         {
             return Name;
         }
-
 
     }
 }

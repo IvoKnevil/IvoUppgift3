@@ -4,17 +4,19 @@ using System.Text;
 
 namespace IvoUppgift3.Enemies.Monsters
 {
-    class Greta : Monster
+    class Batman : Monster
     {
+
         Random random = new Random();
         List<string> listOfUniqueMoves = new List<string>()
-        { "tries to hit you with info about polar ice melting",
-            "tries to move you by saying how many species have gone extinct",
-            "tries to get you to stop by saying the planet's average surface temperature has risen over one degree",
-            "gives you an angry teenage look" };
+        { "uses one of his toys to attempt to stop you",
+            "uses his idiotic voice to try to scare you",
+            "calls his buddy Robin to help him out",
+            "tries to punch you" };
 
- 
-        public string Name { get { return "Greta"; } }
+
+        public string Name { get { return "Batman"; } }
+
 
 
         //Method to show different attacks in the battle screen
