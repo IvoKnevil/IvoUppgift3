@@ -10,6 +10,8 @@ namespace IvoUppgift3.Enemies
         private bool dead;
         private string name;
         private int atkDmg = 10;
+        private int gold;
+        private int xp;
         Random random = new Random();
 
 
@@ -66,6 +68,16 @@ namespace IvoUppgift3.Enemies
 
         public abstract string UseUniqueMoves();
         
+        public virtual int DropGold()
+        {
+            this.gold = random.Next(60,100);
+            return gold;
+        }
 
+        public virtual int GiveXp()
+        {
+            this.xp = random.Next(55, 70);
+            return xp;
+        }
     }
 }

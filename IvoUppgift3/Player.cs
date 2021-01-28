@@ -15,6 +15,8 @@ namespace IvoUppgift3
         private int hpCoef;
         private int atkDmg = 10;
         private int dmgDone;
+        private int xp;
+        private int gold;
 
         Random random = new Random();
         List<string> listOfUniqueMoves = new List<string>()
@@ -46,7 +48,10 @@ namespace IvoUppgift3
 
         public int AtkDmg { get => atkDmg; set => atkDmg = value; }
 
-        
+        public int Xp { get => xp; set => xp = value; }
+
+        public int Gold { get => gold; set => gold = value; }
+
         public int Attack(Monster monster)
         {
             if (random.Next(atkDmg) == 1 || random.Next(atkDmg) == 2)
@@ -99,6 +104,30 @@ namespace IvoUppgift3
 
             return this.dead;
         }
+
+        public int GetGold(int lootGold)
+        {
+            Gold += lootGold;
+            return this.Gold;
+        }
+
+        public int GainXp(int receiveXp)
+        {
+            Xp += receiveXp;
+            return this.Xp;
+        }
+
+        public void GiveGold()
+        {
+
+        }
+
+        public int ResetXp ()
+        {
+            this.Xp = 0;
+            return Xp;
+        }
+
 
         public override string ToString()
         {

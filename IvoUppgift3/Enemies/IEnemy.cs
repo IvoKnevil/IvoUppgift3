@@ -16,5 +16,11 @@ namespace IvoUppgift3.Enemies
         int GetHp();
 
         void TakeDamage(int damage);
+
+        int DropGold();
+
+        int GiveXp();
+
+
     }
 }

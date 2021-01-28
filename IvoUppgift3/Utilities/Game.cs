@@ -15,6 +15,7 @@ namespace IvoUppgift3.Utilities
         Player player = new Player();
         List<Monster> listOfMonsters = new List<Monster>();
         List<Monster> listOfKilledMonsters = new List<Monster>();
+        List<Monster> listOfSpecialMonsters = new List<Monster>();
         private bool lostGame, wonGame;
 
         public void Startgame()
@@ -26,9 +27,14 @@ namespace IvoUppgift3.Utilities
             InitializePlayer();
             InitializeMonsters();
 
+            foreach (Monster monster in listOfMonsters)
+            {
+                Console.WriteLine(monster);
+            }
+            ClearScreen();
             while (keepPlaying && !lostGame && !wonGame)
             {
-                ShowGameMenu(); 
+                ShowGameMenu();
                 GameActions(Menu.PlayerMenuChoice(player)); //calls method that takes user menu choice. Sends the info to method PlayerMenuChoice in the class Menu.
             }
 
@@ -76,6 +82,12 @@ namespace IvoUppgift3.Utilities
             Batman batman = new Batman();
             McFly mcFly = new McFly();
             HarryPotter harryPotter = new HarryPotter();
+            TrashMob trashMob = new TrashMob();
+
+            listOfSpecialMonsters.AddRange(new Monster[]
+            {
+                greta, niceOldLady, ghandi, mLK, obiWan, superman, frodo, batman, mcFly, harryPotter
+            });
 
             List<Monster> listToShuffle = new List<Monster>() { greta, niceOldLady, ghandi, mLK, obiWan, superman, frodo, batman, mcFly, harryPotter };
 
@@ -83,10 +95,17 @@ namespace IvoUppgift3.Utilities
             int i = listToShuffle.Count;
             while (i > 0)
             {
-                i--;
-                int listIndex = random.Next(i + 1);
-                listOfMonsters.Add(listToShuffle[listIndex]);
-                listToShuffle.RemoveAt(listIndex);
+                if (random.Next(10) < 7)
+                {
+                    listOfMonsters.Add(trashMob);
+                }
+                else
+                {
+                    i--;
+                    int listIndex = random.Next(i + 1);
+                    listOfMonsters.Add(listToShuffle[listIndex]);
+                    listToShuffle.RemoveAt(listIndex);
+                }
             }
 
         }
@@ -129,8 +148,8 @@ namespace IvoUppgift3.Utilities
 
         }
 
-        private void GoAdventure()  
-        {     
+        private void GoAdventure()
+        {
             int randomAdventure = random.Next(1, 10);
 
             if (randomAdventure == 1) //10% chance of nothing happening
@@ -150,10 +169,11 @@ namespace IvoUppgift3.Utilities
 
         private void Battle()
         {
+
             var battleMonster = listOfMonsters[player.Level - 1];    //variable battlemonster to single out the monster to fight and keep code cleaner
             int monsterHp = battleMonster.HealthPoints(player.Level); //variable monsterHo to single out the health points of the monster to fight and keep code cleaner
 
-            BattleIntro(battleMonster, monsterHp); 
+            BattleIntro(battleMonster, monsterHp);
 
             while (!battleMonster.IsDead() && !player.IsDead())
             {
@@ -164,11 +184,34 @@ namespace IvoUppgift3.Utilities
 
                 if (battleMonster.IsDead())
                 {
-                    player.Level++;
                     player.HealthPoints(player.Level);
-                    listOfKilledMonsters.Add(battleMonster);
-                    Console.WriteLine($"BOOOOOOOM. That irritating hideous {battleMonster} is dead.\n");
-                    Console.WriteLine($"You stand tall and proud after your performace. \nYou take a steroid shot and gain a whole new level of awesome! (level {player.Level})\n");
+                    if (listOfSpecialMonsters.Contains(battleMonster))
+                    {
+                        listOfKilledMonsters.Add(battleMonster);
+                    }
+
+                    int lootGold = battleMonster.DropGold();
+                    int receiveXp = battleMonster.GiveXp();
+                    Console.WriteLine($"BOOOOOOOM. That irritating hideous {battleMonster} is dead!\n");
+                    Console.WriteLine($"{battleMonster} drops {lootGold} gold");
+                    Console.WriteLine($"You have: {player.GetGold(lootGold)} gold\n");
+                    Console.WriteLine($"You receive {receiveXp} xp");
+                    Console.WriteLine($"You have: {player.GainXp(receiveXp)} xp");
+
+                    if (player.Xp >= 100)
+                    {
+                        Console.WriteLine("\n      **************************************************************");
+                        Console.WriteLine("      *   W O A H   W O A H     W O A H       W O A H   W O A H    *");
+                        Console.WriteLine("      *                                                            *");
+                        Console.WriteLine("      *              G A I N E D   L E V E L                       *");
+                        Console.WriteLine("      **************************************************************\n");
+                        player.Level++;
+                        player.ResetXp();
+
+                        Console.WriteLine($"You stand tall and proud after your performace. \nYou take a steroid shot and gain a whole new level of awesome! (level {player.Level})\n");
+
+                    }
+                    listOfMonsters.RemoveAt(0);
                     ClearScreen();
                     battleMonster.IsDead();
 
@@ -212,16 +255,10 @@ namespace IvoUppgift3.Utilities
             Console.WriteLine("___________________________________\n");
             Console.WriteLine($"Name: {player.Name}");
             Console.WriteLine($"Level: {player.Level}");
+            Console.WriteLine($"Gold: {player.Gold}");
+            Console.WriteLine($"Xp: {player.Xp}");
             Console.WriteLine($"Hp: {player.HealthPoints(player.Level)} points");
-
-            if (player.Level == 1)
-            {
-                Console.WriteLine("Monsters killed: 0");
-            }
-            else
-            {
-                Console.WriteLine("Monsters killed: " + (String.Join(", ", listOfKilledMonsters) + "\n"));
-            }
+            Console.WriteLine("Monsters killed: " + (String.Join(", ", listOfKilledMonsters) + "\n"));
             Console.WriteLine("___________________________________\n");
 
         }
