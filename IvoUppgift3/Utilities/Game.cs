@@ -385,7 +385,10 @@ namespace IvoUppgift3.Utilities
                         player.EquipItems(trinket); //Adds the purchased items power to character
                         int goldToPay = player.GiveGold(trinket.Price);
                         store.TakeGold(goldToPay);
+                        Console.WriteLine($"You bought {trinket}. You feel so badass.\n");
+                        Console.WriteLine($"You have {player.Gold} gold\n");
                         listOfTrinkets.Clear();
+                        ClearScreen();
                     }
                     else
                     {
@@ -433,7 +436,10 @@ namespace IvoUppgift3.Utilities
                         player.EquipItems(ring); //Adds the purchased items power to character
                         int goldToPay = player.GiveGold(ring.Price);
                         store.TakeGold(goldToPay);
+                        Console.WriteLine($"You bought {ring}. You feel so badass.\n");
+                        Console.WriteLine($"You have {player.Gold} gold\n");
                         listOfRings.Clear();
+                        ClearScreen();
                     }
                     else
                     {
@@ -480,7 +486,10 @@ namespace IvoUppgift3.Utilities
                         player.EquipItems(ammulet); //Adds the purchased items power to character
                         int goldToPay = player.GiveGold(ammulet.Price);
                         store.TakeGold(goldToPay);
+                        Console.WriteLine($"You bought {ammulet}. You feel so badass.\n");
+                        Console.WriteLine($"You have {player.Gold} gold\n");
                         listOfAmmulets.Clear();
+                        ClearScreen();
                     }
                     else
                     {
