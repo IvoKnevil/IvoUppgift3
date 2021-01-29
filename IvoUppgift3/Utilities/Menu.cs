@@ -7,7 +7,8 @@ namespace IvoUppgift3.Utilities
     class Menu
     {
 
-        private static List<string> gameMenu = new List<string>() { "Go adventuring", "Show detalis about your character", "Exit game" };
+        private static List<string> gameMenu = new List<string>() { "Go adventuring", "Show detalis about your character", "Visit the store", "Exit game" };
+        private static List<string> storeMenu = new List<string> () { "Ammulets", "Rings", "Trinkets", "Exit store" };
         private static int playerChoice;
         private static string userInputDescription;
         private static string inputText;
@@ -23,10 +24,19 @@ namespace IvoUppgift3.Utilities
             }
         }
 
+        static public void StoreMenu()  //Prints game menu
+
+        {
+            for (int i = 0; i < storeMenu.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {storeMenu[i]}");
+            }
+        }
+
         static public object[] PlayerMenuChoice(object player) //method reads users choice (choice=int, choice description=string), adds these to the array MenuChoiceToReturn. The array is sent back to the game. 
         {
 
-            Console.Write($"What would you like to do {player}? ");
+            Console.Write($"\nWhat would you like to do {player}? ");
             inputText = Console.ReadLine();
 
             if (!string.IsNullOrEmpty(inputText)) //Handles exceptions if player misses to make a choice in game menu
@@ -58,8 +68,8 @@ namespace IvoUppgift3.Utilities
 
         }
 
-
-
+        
+        
 
         static public string ReturnErrorMsg(int userInput)
         {

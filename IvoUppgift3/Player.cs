@@ -1,4 +1,5 @@
 ﻿using IvoUppgift3.Enemies;
+using IvoUppgift3.Shop.Trinkets;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,6 +18,9 @@ namespace IvoUppgift3
         private int dmgDone;
         private int xp;
         private int gold;
+        private int strenght;
+        private int toughness;
+        private int critChance;
 
         Random random = new Random();
         List<string> listOfUniqueMoves = new List<string>()
@@ -24,6 +28,7 @@ namespace IvoUppgift3
             "You headbutt",
             "You use your knife to cut",
             "You elbow the crap out of" };
+        List<Items> equippedItems = new List<Items>();
 
 
         public Player()
@@ -31,11 +36,15 @@ namespace IvoUppgift3
 
         }
 
-        public Player(string name, int level, int hpCoef)
+        public Player(string name, int level, int hpCoef, int strenght, int toughness, int critChance, int gold)
         {
             this.name = name;
             this.level = level;
             this.hpCoef = hpCoef;
+            this.strenght = strenght;
+            this.toughness = toughness;
+            this.critChance = critChance;
+            this.gold = gold;
         }
 
         public string Name { get => name; set => name = value; }
@@ -52,15 +61,22 @@ namespace IvoUppgift3
 
         public int Gold { get => gold; set => gold = value; }
 
+        public int Strenght { get => strenght; set => strenght = value; }
+
+        public int Toughness { get => toughness; set => toughness = value; }
+
+        public int CritChance { get => critChance; set => critChance = value; }
+
+
         public int Attack(Monster monster)
         {
             if (random.Next(atkDmg) == 1 || random.Next(atkDmg) == 2)
             {
-                dmgDone = random.Next(28,35) * level;
+                dmgDone = random.Next((28 + CritChance),(35 + CritChance)) * level;
             }
             else
             {
-                dmgDone = random.Next(AtkDmg * Level);
+                dmgDone = random.Next((AtkDmg + Strenght) * Level);
             }
             monster.TakeDamage(dmgDone);
             return dmgDone;
@@ -69,7 +85,7 @@ namespace IvoUppgift3
 
         public void TakeDamage(int monsterdmg)
         {
-            hp -= monsterdmg;
+            hp -= monsterdmg + Toughness;
         }
 
        
@@ -117,9 +133,10 @@ namespace IvoUppgift3
             return this.Xp;
         }
 
-        public void GiveGold()
+        public int GiveGold(int goldToPay)
         {
-
+            Gold -= goldToPay;
+            return this.Gold;
         }
 
         public int ResetXp ()
@@ -128,6 +145,14 @@ namespace IvoUppgift3
             return Xp;
         }
 
+        
+        public void EquipItems(Items purchasedItem)
+        {
+            Strenght += purchasedItem.Strenght;
+            Toughness += purchasedItem.Toughness;
+            CritChance += purchasedItem.CritChance;
+        }
+        
 
         public override string ToString()
         {

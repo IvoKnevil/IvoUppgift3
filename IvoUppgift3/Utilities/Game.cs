@@ -1,5 +1,7 @@
 ﻿using IvoUppgift3.Enemies;
 using IvoUppgift3.Enemies.Monsters;
+using IvoUppgift3.Shop;
+using IvoUppgift3.Shop.Trinkets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +15,17 @@ namespace IvoUppgift3.Utilities
         private bool keepPlaying = true;
         Random random = new Random();
         Player player = new Player();
+
         List<Monster> listOfMonsters = new List<Monster>();
         List<Monster> listOfKilledMonsters = new List<Monster>();
         List<Monster> listOfSpecialMonsters = new List<Monster>();
+        List<Items> listOfAmmulets = new List<Items>();
+        List<Items> listOfRings = new List<Items>();
+        List<Items> listOfTrinkets = new List<Items>();
+
+        Store store = new Store();
         private bool lostGame, wonGame;
+        private bool visitStore = true;
 
         public void Startgame()
         {
@@ -26,12 +35,8 @@ namespace IvoUppgift3.Utilities
             Welcome();
             InitializePlayer();
             InitializeMonsters();
+            InitializeItems();
 
-            foreach (Monster monster in listOfMonsters)
-            {
-                Console.WriteLine(monster);
-            }
-            ClearScreen();
             while (keepPlaying && !lostGame && !wonGame)
             {
                 ShowGameMenu();
@@ -44,8 +49,7 @@ namespace IvoUppgift3.Utilities
         private void InitializePlayer()  //initializes a player
         {
             Console.Write("Yo mofo enter your badass name: ");
-            player = new Player(Console.ReadLine(), 1, 100);
-            player.Hp = 100;
+            player = new Player(Console.ReadLine(), 1, 100, 0, 0, 0, 0);
 
             if (player.Name == "Robin")
             {
@@ -60,6 +64,7 @@ namespace IvoUppgift3.Utilities
         {
             player.Hp = 200;
             player.HpCoef = 200;
+            player.Gold = 2000;
             Console.Clear();
             Console.WriteLine("\n      **************************************************************");
             Console.WriteLine("      *   W O A H   H O M I E   G O D M O D E   A C T I V A T E D  *");
@@ -95,7 +100,7 @@ namespace IvoUppgift3.Utilities
             int i = listToShuffle.Count;
             while (i > 0)
             {
-                if (random.Next(10) < 7)
+                if (random.Next(10) <= 7)
                 {
                     listOfMonsters.Add(trashMob);
                 }
@@ -106,6 +111,50 @@ namespace IvoUppgift3.Utilities
                     listOfMonsters.Add(listToShuffle[listIndex]);
                     listToShuffle.RemoveAt(listIndex);
                 }
+            }
+
+        }
+
+        private void InitializeItems() //initializes items for the shop
+        {
+
+            Ammulet whiteTrashNecklace = new Ammulet("White trash necklace", random.Next(170, 250), 2);
+            Ammulet leatherBracelet = new Ammulet("Leather bracelet", random.Next(189, 250), 2);
+            Ammulet sunglasses = new Ammulet("Sunglasses", random.Next(209, 259), 2);
+            Ammulet badassBoots = new Ammulet("Badass boots", random.Next(199, 249), 2);
+            Ring fakeSilver = new Ring("Fake silver ring", random.Next(250, 350),2);
+            Ring tattoedRing = new Ring("Tattoed ring", random.Next(280, 350),2);
+            Ring oldFatGuyRing = new Ring("Old fatguy goldring", random.Next(320, 350),2);
+            Trinket knife = new Trinket("Knife", random.Next(320, 350),3);
+            Trinket bat = new Trinket("Baseball bat", random.Next(350, 380),3);
+            Trinket beerBottle = new Trinket("Beer bottle", random.Next(400, 420),3);
+            Trinket wifeBeater = new Trinket("Wife beater", random.Next(280, 420),3);
+
+            List<Items> listOfItems = new List<Items>() { whiteTrashNecklace, leatherBracelet, sunglasses, badassBoots, fakeSilver, tattoedRing, oldFatGuyRing, knife, bat, beerBottle, wifeBeater };
+
+            //loop to randomize what items will be available for purchase in the shop
+            int i = listOfItems.Count;
+            while (i > 0)
+            {
+
+                i--;
+                int listIndex = random.Next(i + 1);
+
+                if (listOfItems[listIndex] is Ammulet)
+                {
+                    listOfAmmulets.Add(listOfItems[listIndex]);
+                }
+                else if (listOfItems[listIndex] is Ring)
+                {
+                    listOfRings.Add(listOfItems[listIndex]);
+                }
+                else if (listOfItems[listIndex] is Trinket)
+                {
+                    listOfTrinkets.Add(listOfItems[listIndex]);
+                }
+
+                listOfItems.RemoveAt(listIndex);
+
             }
 
         }
@@ -137,6 +186,13 @@ namespace IvoUppgift3.Utilities
                     break;
 
                 case 3:
+                    visitStore = true;
+                    EnterShop();  //To buy items to make char more powerful
+                    ClearScreen();
+                    break;
+
+
+                case 4:
                     keepPlaying = false;  //End program
                     break;
 
@@ -164,7 +220,6 @@ namespace IvoUppgift3.Utilities
             }
 
         }
-
 
 
         private void Battle()
@@ -207,7 +262,7 @@ namespace IvoUppgift3.Utilities
                         Console.WriteLine("      **************************************************************\n");
                         player.Level++;
                         player.ResetXp();
-
+                        player.HealthPoints(player.Level);
                         Console.WriteLine($"You stand tall and proud after your performace. \nYou take a steroid shot and gain a whole new level of awesome! (level {player.Level})\n");
 
                     }
@@ -225,7 +280,7 @@ namespace IvoUppgift3.Utilities
                 Console.ReadKey();
 
                 //receives random attacks
-                int monsterdmg = battleMonster.Attack(player.Level);
+                int monsterdmg = (battleMonster.Attack(player.Level)) - player.Toughness;
                 Console.WriteLine($"{battleMonster} {battleMonster.UseUniqueMoves()}. You endure {monsterdmg} damage");
                 player.TakeDamage(monsterdmg);
                 Console.WriteLine($"Your current hp is: {player.GetHp()}\n");
@@ -256,14 +311,200 @@ namespace IvoUppgift3.Utilities
             Console.WriteLine($"Name: {player.Name}");
             Console.WriteLine($"Level: {player.Level}");
             Console.WriteLine($"Gold: {player.Gold}");
-            Console.WriteLine($"Xp: {player.Xp}");
+            Console.WriteLine($"Exp: {player.Xp}/100");
             Console.WriteLine($"Hp: {player.HealthPoints(player.Level)} points");
+            Console.WriteLine($"Strenght: {player.Strenght}");
+            Console.WriteLine($"Toughness: {player.Toughness}");
+            Console.WriteLine($"Crit increase: {player.CritChance}");
             Console.WriteLine("Monsters killed: " + (String.Join(", ", listOfKilledMonsters) + "\n"));
             Console.WriteLine("___________________________________\n");
 
         }
 
+        private void EnterShop()
+        {
 
+            Console.WriteLine("You enter a somewhat dark and smelly place...");
+            Console.WriteLine("You feel at home...\n");
+
+            Console.WriteLine($"Behind the counter is your buddy {store.StoreClerk()}\n");
+            ClearScreen();
+
+            while (visitStore)
+            {
+                Console.WriteLine("Whatcha need bro?");
+                Menu.StoreMenu();
+
+                int choice = Convert.ToInt32(Console.ReadLine());
+                switch (choice)
+                {
+                    case 1:
+
+                        InspectAmmulets();
+                        break;
+                    case 2:
+                        InspectRings();
+                        break;
+                    case 3:
+                        InspectTrinkets();
+                        break;
+                    case 4:
+                        ExitStore();
+                        break;
+
+                }
+            }
+        }
+
+        private void ExitStore()
+        {
+            Console.Clear();
+            Console.WriteLine("Sod off!\n");
+            visitStore = false;
+        }
+
+        private void InspectTrinkets()
+        {
+            Console.Clear();
+            if (listOfTrinkets.Count > 1)
+            {
+                Console.WriteLine($"I have {listOfTrinkets[0]} for sale\n");
+                ClearScreen();
+                listOfTrinkets[0].ShowDetalis();
+
+                Items trinket = listOfTrinkets[0];
+
+
+                if (player.Gold >= trinket.Price)
+                {
+                    Console.Write($"Would you like to buy the {listOfTrinkets[0]}?");
+                    string answer = Console.ReadLine();
+                    Console.Clear();
+                    if (answer.ToLower() == "y" || answer.ToLower() == "yes")
+                    {
+                        player.EquipItems(trinket); //Adds the purchased items power to character
+                        int goldToPay = player.GiveGold(trinket.Price);
+                        store.TakeGold(goldToPay);
+                        listOfTrinkets.Clear();
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("maybe later bro\n");
+                        ClearScreen();
+                    }
+                }
+
+                else
+                {
+                    Console.WriteLine("Bah, too expensive for me\n");
+                    ClearScreen();
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("Sorry bro, got nothing man\n");
+                ClearScreen();
+            }
+
+
+        }
+
+        private void InspectRings()
+        {
+            Console.Clear();
+            if (listOfRings.Count > 1)
+            {
+                Console.WriteLine($"I have {listOfRings[0]} for sale\n");
+                ClearScreen();
+                listOfRings[0].ShowDetalis();
+
+                Items ring = listOfRings[0];
+
+
+                if (player.Gold >= ring.Price)
+                {
+                    Console.Write($"Would you like to buy the {listOfRings[0]}?");
+                    string answer = Console.ReadLine();
+                    Console.Clear();
+                    if (answer.ToLower() == "y" || answer.ToLower() == "yes")
+                    {
+                        player.EquipItems(ring); //Adds the purchased items power to character
+                        int goldToPay = player.GiveGold(ring.Price);
+                        store.TakeGold(goldToPay);
+                        listOfRings.Clear();
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("maybe later bro\n");
+                        ClearScreen();
+                    }
+                }
+
+                else
+                {
+                    Console.WriteLine("Bah, too expensive for me\n");
+                    ClearScreen();
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("Sorry bro, got nothing man\n");
+                ClearScreen();
+            }
+        }
+
+        private void InspectAmmulets()
+        {
+
+            Console.Clear();
+            if (listOfAmmulets.Count > 1)
+            {
+                Console.WriteLine($"I have {listOfAmmulets[0]} for sale\n");
+                ClearScreen();
+                listOfAmmulets[0].ShowDetalis();
+
+                Items ammulet = listOfAmmulets[0];
+
+
+                if (player.Gold >= ammulet.Price)
+                {
+                    Console.Write($"Would you like to buy the {listOfAmmulets[0]}?");
+                    string answer = Console.ReadLine();
+                    Console.Clear();
+                    if (answer.ToLower() == "y" || answer.ToLower() == "yes")
+                    {
+                        player.EquipItems(ammulet); //Adds the purchased items power to character
+                        int goldToPay = player.GiveGold(ammulet.Price);
+                        store.TakeGold(goldToPay);
+                        listOfAmmulets.Clear();
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("maybe later bro\n");
+                        ClearScreen();
+                    }
+                }
+
+                else
+                {
+                    Console.WriteLine("Bah, too expensive for me\n");
+                    ClearScreen();
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("Sorry bro, got nothing man\n");
+                ClearScreen();
+            }
+
+
+        }
 
         private void ProgramLayout()
         {
@@ -289,7 +530,6 @@ namespace IvoUppgift3.Utilities
 
         }
 
-
         public void ExitGame()
         {
             if (!keepPlaying)
@@ -313,6 +553,7 @@ namespace IvoUppgift3.Utilities
                 Console.WriteLine("Now get lost you stupid c*nt");
             }
         }
+
 
 
     }

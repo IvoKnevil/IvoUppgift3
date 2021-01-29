@@ -53,7 +53,7 @@ namespace IvoUppgift3.Enemies.Monsters
 
         public override int GiveXp()
         {
-            this.Xp = random.Next(15, 25);
+            this.Xp = random.Next(22, 35);
             return Xp;
         }
     }

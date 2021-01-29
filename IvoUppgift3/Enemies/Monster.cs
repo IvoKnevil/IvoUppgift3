@@ -76,7 +76,7 @@ namespace IvoUppgift3.Enemies
 
         public virtual int GiveXp()
         {
-            this.xp = random.Next(55, 70);
+            this.xp = random.Next(59, 80);
             return xp;
         }
     }
